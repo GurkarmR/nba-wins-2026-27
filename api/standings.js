@@ -2,7 +2,6 @@ import { picks, managers, months } from '../data.js';
 const ids=new Set(picks.map(p=>p.abbr));
 const aliases={NYK:'NY',GSW:'GS',SAS:'SA',NOP:'NO',UTA:'UTAH',WAS:'WSH',PHO:'PHX',BRK:'BKN'};
 const normalize = code => aliases[code] || code;
-const monthRange = key => {const [y,m]=key.split('-').map(Number);const last=new Date(Date.UTC(y,m,0)).getUTCDate();return `${y}${String(m).padStart(2,'0')}01-${y}${String(m).padStart(2,'0')}${last}`;};
 function todayNY(){ return new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date()); }
 export function aggregate(events,asOf){
  const cutoff=asOf || todayNY(); const teams=Object.fromEntries(picks.map(p=>[p.abbr,{...p,wins:0,losses:0,monthly:Object.fromEntries(months.map(m=>[m,{wins:0,losses:0}]))}]));
@@ -28,7 +27,7 @@ export function aggregate(events,asOf){
 }
 export async function fetchEvents(fetcher=fetch){
  const cutoff=todayNY(), data=await Promise.all(months.filter(m=>m<=cutoff.slice(0,7)).map(async m=>{
- const url=`https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=${monthRange(m)}&limit=500&groups=50`;
+ const url=`https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=${m.replace('-','')}&limit=500&seasontype=2`;
  const res=await fetcher(url,{headers:{Accept:'application/json'},signal:AbortSignal.timeout(10000)});if(!res.ok)throw new Error(`ESPN returned ${res.status} for ${m}`);
  const json=await res.json();return json.events||[];
  }));return data.flat();
