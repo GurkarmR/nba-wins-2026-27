@@ -1,0 +1,1 @@
+{"version":2,"crons":[{"path":"/api/standings?warm=1","schedule":"0 15 * * *"}],"headers":[{"source":"/(.*)","headers":[{"key":"X-Content-Type-Options","value":"nosniff"}]}]}

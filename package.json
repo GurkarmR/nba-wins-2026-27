@@ -1,0 +1,1 @@
+{"name":"nba-wins-2026-27","version":"1.0.0","private":true,"type":"module","scripts":{"dev":"vercel dev","test":"node --test"},"engines":{"node":">=20"}}
